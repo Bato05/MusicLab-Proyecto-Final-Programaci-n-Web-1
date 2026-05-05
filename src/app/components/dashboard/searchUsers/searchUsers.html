@@ -1,0 +1,113 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/content" routerLinkActive="active">My content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/upload" routerLinkActive="active">upload content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/search" routerLinkActive="active">Search artists</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inbox">Inbox</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Options
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a></li>
+            <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
+      </ul>
+    </div>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<div class="home-wrapper d-flex flex-column align-items-center">
+  
+  <div class="auth-card p-4 mb-5 w-100" style="max-width: 900px;">
+    <h3 class="text-white text-center mb-4" style="text-shadow: 0 0 10px var(--neon-purple);">
+      Find Collaborators
+    </h3>
+    
+    <div class="row g-3">
+      <div class="col-md-8">
+        <div class="custom-input-group p-1">
+          <input type="text" 
+                 [(ngModel)]="searchText" 
+                 (input)="aplicarFiltros()" 
+                 class="form-control bg-transparent border-0 text-white" 
+                 placeholder="Type a name to search...">
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <select class="form-select bg-dark text-white border-0 custom-input-group" 
+                [(ngModel)]="selectedCategory" 
+                (change)="aplicarFiltros()"
+                style="height: 100%; border-radius: 14px; padding-left: 10px;">
+          <option *ngFor="let cat of categories" [value]="cat">{{cat}}</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading; else spinner" class="w-100 d-flex flex-wrap justify-content-center gap-4">
+    <div class="card p-3 shadow-lg" *ngFor="let artist of filteredArtists" style="max-width: 260px; min-width: 240px;">
+      <div class="text-center card-body">
+        
+        <div class="profile-img-container mb-3" style="width: 90px; height: 90px;">
+          <img [src]="artist.profile_img_url === 'default_profile.png' 
+                      ? 'http://localhost/phpMusicLab/assets/default_profile.png' 
+                      : 'http://localhost/phpMusicLab/uploads/' + artist.profile_img_url" 
+               class="profile-img-post" alt="Artist Profile">
+        </div>
+
+        <h5 class="text-white mb-1">{{artist.first_name}} {{artist.last_name}}</h5>
+        <p class="small fw-bold" style="color: var(--neon-pink);">{{artist.artist_type}}</p>
+        
+        <p class="x-small text-secondary mb-3" style="height: 40px; overflow: hidden;">
+          {{ artist.bio || 'No biography available.' }}
+        </p>
+        
+        <div class="d-flex gap-2">
+          <button 
+            class="btn btn-neon btn-sm w-100" 
+            (click)="toggleFollow(artist.id)"
+            [disabled]="loadingFollow === artist.id">
+            <i class="bi" [ngClass]="isFollowing(artist.id) ? 'bi-person-check-fill' : 'bi-person-plus-fill'"></i> 
+            {{ isFollowing(artist.id) ? ' Following' : ' Follow' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredArtists.length === 0" class="text-center mt-5">
+      <i class="bi bi-person-x text-secondary" style="font-size: 3rem;"></i>
+      <p class="text-secondary mt-2">No artists found matching your search.</p>
+    </div>
+  </div>
+
+  <ng-template #spinner>
+    <div class="text-center mt-5">
+      <div class="spinner-border text-info" role="status"></div>
+      <p class="text-white mt-3">Searching for artists...</p>
+    </div>
+  </ng-template>
+</div>

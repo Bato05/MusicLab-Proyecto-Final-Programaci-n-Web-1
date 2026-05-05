@@ -1,0 +1,114 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" routerLink="/content">My content</a></li>
+        <li class="nav-item"><a class="nav-link active" routerLink="/upload">Upload content</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/search">Search artists</a></li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inbox">Inbox</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item active" routerLink="/settings">Settings</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
+      </ul>
+    </div>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<div class="home-wrapper d-flex flex-column align-items-center mt-5 pt-4 min-vh-100 pb-5">
+  <div class="auth-card p-5 w-100" style="max-width: 600px;">
+    
+    <div class="text-center mb-4">
+      <h2 class="text-white fw-bold">Upload New Content</h2>
+      <p class="text-secondary small">Share your music, lyrics or scores with the community</p>
+    </div>
+
+    <form [formGroup]="uploadForm">
+      
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Title</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <input type="text" formControlName="title" 
+                 class="form-control bg-transparent border-0 text-white shadow-none" 
+                 placeholder="Enter a catchy title">
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Content Type</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="file_type" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="audio" class="bg-dark">Audio (.mp3)</option>
+            <option value="lyrics" class="bg-dark">Lyrics (Text)</option>
+            <option value="score" class="bg-dark">Score (PDF)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Visibility</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="visibility" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="public" class="bg-dark">Public (Everyone)</option>
+            <option value="followers" class="bg-dark">Followers (Specific User)</option>
+            <option value="private" class="bg-dark">Private (Only Me)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3" *ngIf="uploadForm.get('visibility')?.value === 'followers'">
+        <label class="form-label small fw-bold text-info">Select Destination User</label>
+        <div class="custom-input-group border-bottom border-info">
+          <select formControlName="destination_id" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option [ngValue]="null" disabled class="bg-dark">Choose a user...</option>
+            <option *ngFor="let user of usersList" [value]="user.id" class="bg-dark">
+              {{ user.first_name }} {{ user.last_name }} ({{ user.artist_type }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-light">Description</label>
+        <div class="custom-input-group border border-secondary rounded">
+          <textarea formControlName="description" rows="3" 
+                    class="form-control bg-transparent border-0 text-white shadow-none" 
+                    placeholder="Tell us more about this work..."></textarea>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label class="btn btn-outline-light w-100 py-3 border-dashed" style="border-style: dashed;">
+          <i class="bi bi-cloud-arrow-up-fill me-2"></i> 
+          {{ fileName ? fileName : 'Select File' }}
+          <input type="file" [accept]="acceptedExtensions()" (change)="onFileSelected($event)" hidden>
+        </label>
+      </div>
+
+      <button type="button" (click)="publicar()" 
+              [disabled]="uploadForm.invalid || loading"
+              class="btn btn-neon w-100 py-3 mb-3 fw-bold">
+        <span *ngIf="!loading">Publish Content</span>
+        <span *ngIf="loading">Uploading...</span>
+      </button>
+
+      <button type="button" routerLink="/home" class="btn btn-outline-secondary w-100 py-2 text-white border-secondary">
+        Cancel
+      </button>
+
+    </form>
+  </div>
+</div>

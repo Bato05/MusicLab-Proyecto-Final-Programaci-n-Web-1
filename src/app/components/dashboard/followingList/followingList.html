@@ -1,0 +1,50 @@
+<div class="home-wrapper d-flex flex-column align-items-center mt-4">
+  
+  <div class="d-flex justify-content-between align-items-center w-100 mb-4" style="max-width: 900px;">
+    <h3 class="text-white m-0" style="text-shadow: 0 0 10px var(--neon-purple);">
+      Following ({{ followingList.length }})
+    </h3>
+    <button routerLink="/profile" class="btn btn-outline-light btn-sm">
+      <i class="bi bi-arrow-left"></i> Back to Profile
+    </button>
+  </div>
+
+  <div *ngIf="!loading; else spinner" class="w-100 d-flex flex-wrap justify-content-center gap-4">
+    
+    <div class="card p-3 shadow-lg" *ngFor="let artist of followingList" style="max-width: 260px; min-width: 240px;">
+      <div class="text-center card-body">
+        
+        <div class="profile-img-container mb-3" style="width: 90px; height: 90px;">
+          <img [src]="artist.profile_img_url === 'default_profile.png' 
+                      ? 'http://localhost/phpMusicLab/assets/default_profile.png' 
+                      : 'http://localhost/phpMusicLab/uploads/' + artist.profile_img_url" 
+               class="profile-img-post" alt="Profile">
+        </div>
+
+        <h5 class="text-white mb-1">{{artist.first_name}} {{artist.last_name}}</h5>
+        
+        <button 
+          class="btn btn-outline-danger btn-sm w-100 mt-3" 
+          (click)="unfollow(artist.id)"
+          [disabled]="loadingAction === artist.id">
+          <span *ngIf="loadingAction === artist.id" class="spinner-border spinner-border-sm me-1"></span>
+          Unfollow
+        </button>
+
+      </div>
+    </div>
+
+    <div *ngIf="followingList.length === 0" class="text-center mt-5">
+      <p class="text-secondary">You are not following anyone yet.</p>
+      <a routerLink="/search" class="btn btn-neon">Find Artists</a>
+    </div>
+
+  </div>
+
+  <ng-template #spinner>
+    <div class="text-center mt-5">
+      <div class="spinner-border text-info" role="status"></div>
+    </div>
+  </ng-template>
+
+</div>

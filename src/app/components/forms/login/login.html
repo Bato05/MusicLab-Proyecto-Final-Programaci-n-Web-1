@@ -1,0 +1,58 @@
+<div class="main-container d-flex justify-content-center align-items-center">
+  <div class="auth-wrapper text-center">
+    
+    <div class="logo-section mb-4">
+      <h1 class="display-5 fw-bold text-white mb-0">{{ siteName }}</h1>
+      <p class="text-secondary">{{ welcomeText }}</p>
+    </div>
+
+    <div class="auth-card p-4">
+      
+      <div class="tabs-container d-flex p-1 mb-4">
+        <button class="btn-tab w-50" routerLink="/login" routerLinkActive="active">
+          <i class="bi bi-box-arrow-in-right me-2"></i>Login
+        </button>
+        <button class="btn-tab w-50" routerLink="/register" routerLinkActive="active">
+          <i class="bi bi-person-plus me-2"></i>Register
+        </button>
+      </div>
+
+      <form [formGroup]="formulario" (ngSubmit)="logearse()">
+        
+        <div class="text-start mb-3">
+          <label class="form-label small fw-bold text-light">Email</label>
+          <div class="input-group custom-input-group">
+            <span class="input-group-text bg-transparent border-0 text-secondary">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input id="email_login" type="email" class="form-control bg-transparent border-0 text-white" placeholder="  email@email.com" formControlName="email" required autofocus>
+          </div>
+        </div>
+
+        <div class="text-start mb-4">
+          <label class="form-label small fw-bold text-light">Password</label>
+          <div class="input-group custom-input-group">
+            <span class="input-group-text bg-transparent border-0 text-secondary">
+              <i class="bi bi-lock"></i>
+            </span>
+            <input id="password_login" type="password" class="form-control bg-transparent border-0 text-white" placeholder="  ••••••••" formControlName="password" required>
+            <span class="input-group-text bg-transparent border-0 text-secondary cursor-pointer">
+              <i class="bi bi-eye"></i>
+            </span>
+          </div>
+        </div>
+
+        <button type="submit" [disabled]="formulario.invalid" class="btn btn-neon w-100 py-2 mb-4">
+          Login
+        </button>
+      </form>
+
+      <div class="test-credentials text-start p-3">
+        <p class="mb-1 small fw-bold text-secondary">Proof credentials:</p>
+        <p class="mb-0 x-small text-secondary"><span class="text-purple">Email:</span> bautista.owner@gmail.com </p>
+        <p class="mb-0 x-small text-secondary"><span class="text-purple">Password:</span> 123456 </p>
+      </div>
+    </div> 
+    <p class="mt-4 small text-secondary">2026 {{ siteName }}. Design by Bautista Rodriguez.</p>
+  </div> 
+</div>

@@ -1,0 +1,184 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link active" routerLink="/content">My content</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/upload">Upload content</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/search">Search artists</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/inbox">Inbox</a></li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/settings">Settings</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
+      </ul>
+    </div>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<div class="home-wrapper d-flex flex-column align-items-center mt-4">
+  
+  <div *ngIf="editandoId" class="auth-card p-5 w-100 mb-5 fade-in-animation" style="max-width: 600px;">
+    
+    <div class="text-center mb-4">
+      <h2 class="text-white fw-bold">Edit Content</h2>
+      <p class="text-secondary small">Update your publication details</p>
+    </div>
+
+    <form [formGroup]="formEdicion">
+      
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Title</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <input type="text" formControlName="title" 
+                 class="form-control bg-transparent border-0 text-white shadow-none" 
+                 placeholder="Enter title (min 5 chars)">
+        </div>
+        <div *ngIf="formEdicion.get('title')?.invalid && formEdicion.get('title')?.touched" class="text-danger small mt-1">
+          * Min 5 characters required
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Content Type</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="file_type" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="audio" class="bg-dark">Audio (.mp3)</option>
+            <option value="lyrics" class="bg-dark">Lyrics (Text)</option>
+            <option value="score" class="bg-dark">Score (PDF)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Visibility</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="visibility" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="public" class="bg-dark">Public (Everyone)</option>
+            <option value="followers" class="bg-dark">Followers (Specific User)</option>
+            <option value="private" class="bg-dark">Private (Only Me)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3" *ngIf="formEdicion.get('visibility')?.value === 'followers'">
+        <label class="form-label small fw-bold text-info">Select User</label>
+        <div class="custom-input-group border-bottom border-info">
+          <select formControlName="destination_id" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option [ngValue]="null" disabled class="bg-dark">Choose a user...</option>
+            <option *ngFor="let user of followedUsers" [ngValue]="user.id" class="bg-dark">
+              {{ user.first_name }} {{ user.last_name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-light">Description</label>
+        <div class="custom-input-group border border-secondary rounded">
+          <textarea formControlName="description" rows="3" 
+                    class="form-control bg-transparent border-0 text-white shadow-none" 
+                    placeholder="Description..."></textarea>
+        </div>
+      </div>
+
+      <div class="mb-5">
+        <label class="btn btn-outline-light w-100 py-3 border-dashed" style="border-style: dashed;">
+          <i class="bi bi-cloud-arrow-up-fill me-2"></i> 
+          {{ fileName ? fileName : 'Replace File (Optional)' }}
+          
+          <input type="file" 
+                 [accept]="acceptedExtensions()" 
+                 (change)="onFileSelected($event)" 
+                 hidden>
+        </label>
+      </div>
+
+      <div class="d-grid gap-2">
+        <button type="button" (click)="guardarCambios()" 
+                [disabled]="loading"
+                class="btn btn-neon py-3 fw-bold"
+                [style.opacity]="formEdicion.invalid ? '0.7' : '1'">
+          <span *ngIf="!loading">Save Changes</span>
+          <span *ngIf="loading">Updating...</span>
+        </button>
+
+        <button type="button" (click)="cancelarEdicion()" class="btn btn-outline-secondary py-2 text-white">
+          Cancel
+        </button>
+      </div>
+
+    </form>
+  </div>
+
+  <h3 class="text-white mb-4" style="text-shadow: 0 0 10px var(--neon-purple);">
+    My Library ({{ posts.length }})
+  </h3>
+
+  <div *ngIf="datosListos; else cargando" class="w-100 d-flex flex-column align-items-center pb-5">
+    <div class="card my-3" *ngFor="let p of posts" style="max-width: 600px; width: 100%;">
+      <div class="card-body text-center">
+        
+        <div class="mb-2">
+          <span class="badge" [ngClass]="{
+            'bg-success': p.visibility === 'public',
+            'bg-info text-dark': p.visibility === 'followers',
+            'bg-secondary': p.visibility === 'private'
+          }">
+            {{ p.visibility | uppercase }}
+          </span>
+        </div>
+
+        <h5 class="card-title text-white">{{ p.title }}</h5>
+        <p class="card-date small text-secondary">Published: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}</p>
+        <p class="card-text text-light">{{ p.description }}</p>
+
+        <div class="content-preview mb-4">
+          <div *ngIf="p.file_type === 'audio'" class="audio-player">
+            <audio controls preload="none" class="w-100 custom-audio">
+              <source [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url" type="audio/mpeg">
+            </audio>
+          </div>
+
+          <div *ngIf="p.file_type === 'score' || p.file_type === 'lyrics' || p.file_type === 'text'" class="file-preview">
+            <i class="bi" [ngClass]="p.file_type === 'score' ? 'bi-file-pdf text-danger' : 'bi-file-text text-info'" style="font-size: 2rem;"></i>
+            <div class="mt-2">
+              <a [href]="'http://localhost/phpMusicLab/uploads/' + p.file_url" target="_blank" class="btn btn-sm btn-outline-light">
+                Open {{ p.file_type === 'score' ? 'PDF' : 'Text' }}
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-center gap-3">
+           <button type="button" (click)="abrirEdicion(p)" class="btn btn-outline-secondary px-4">
+               <i class="bi bi-pencil-square me-2"></i>Edit
+           </button>
+           <button type="button" (click)="borrarPublicacion(p.id, p.title)" class="btn btn-outline-danger px-4">
+               <i class="bi bi-trash me-2"></i>Delete
+           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <ng-template #cargando>
+    <div class="text-center mt-5">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="text-white mt-3">Sincronizando biblioteca...</p>
+    </div>
+  </ng-template>
+</div>

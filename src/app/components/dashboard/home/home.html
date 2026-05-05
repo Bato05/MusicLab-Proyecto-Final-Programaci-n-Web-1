@@ -1,0 +1,99 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/content" routerLinkActive="active">My content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/upload" routerLinkActive="active">upload content</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/search" routerLinkActive="active">Search artists</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inbox" routerLinkActive="active">
+            <i class="bi bi-envelope-fill me-1"></i> Inbox
+          </a>
+        </li>
+
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Options
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" routerLink="/profile" routerLinkActive="active">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/settings" routerLinkActive="active">Settings</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
+      </ul>
+    </div>
+    
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<div class="home-wrapper d-flex flex-column align-items-center">
+  <div class="card my-3" *ngFor="let p of posts">
+    <div class="card-body text-center">
+      
+      <div class="profile-img-container mb-3">
+        <img [src]="p.profile_img_url && p.profile_img_url !== 'default_profile.png' 
+                    ? 'http://localhost/phpMusicLab/uploads/' + p.profile_img_url 
+                    : 'http://localhost/phpMusicLab/assets/default_profile.png'" 
+             alt="Profile Image" 
+             class="profile-img-post">
+      </div>
+
+      <h5 class="card-title text-white">{{ p.title }}</h5>
+      <h6 class="card-subtitle mb-2 text-secondary">
+          Artist: {{ p.artist_name }}
+      </h6>
+      <p class="card-date">
+        published: {{ p.created_at | date:'yyyy/MM/dd HH:mm' }}
+      </p>
+      <p class="card-text">{{ p.description }}</p>
+
+      <div class="content-preview mb-4">
+        
+        <div *ngIf="p.file_type === 'audio'" class="audio-player">
+          <audio controls class="w-100 custom-audio" 
+                 [src]="'http://localhost/phpMusicLab/uploads/' + p.file_url">
+            Tu navegador no soporta el reproductor de audio.
+          </audio>
+        </div>
+
+        <div *ngIf="p.file_type === 'score' || p.file_type === 'text'" class="file-preview">
+          <i class="bi" [ngClass]="p.file_type === 'score' ? 'bi-file-pdf' : 'bi-file-text'" style="font-size: 2rem; color: var(--neon-pink);"></i>
+          <p class="small text-secondary mt-2">{{ p.file_url }}</p>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-center gap-3">
+        <button type="button" 
+                (click)="ejecutarDescarga(p)" 
+                class="btn btn-neon px-4">
+                <i class="bi bi-download me-2"></i>Download
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div *ngIf="posts.length === 0" class="text-center mt-5 text-secondary">
+    <p>No posts available yet.</p>
+  </div>
+</div>

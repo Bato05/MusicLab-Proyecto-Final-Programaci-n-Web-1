@@ -1,0 +1,123 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" routerLink="/content">My content</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/upload">upload content</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/search">Search artists</a></li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/inbox">Inbox</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item active" routerLink="/profile">Profile</a></li>
+            <li><a class="dropdown-item" routerLink="/settings">Settings</a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+          <a class="nav-link" routerLink="/admin" routerLinkActive="active">
+            <i class="bi bi-shield-lock-fill"></i> Control panel
+          </a>
+        </li>
+      </ul>
+    </div>
+    <button type="button" (click)="logout()" class="btn btn-outline-danger">Log out</button>
+  </div>
+</nav>
+
+<div class="home-wrapper d-flex flex-column align-items-center mt-5 pt-4 min-vh-100 pb-5">
+  <div class="auth-card p-5 w-100" style="max-width: 700px;">
+    
+    <div class="text-center mb-4">
+      <h2 class="text-white fw-bold">Edit Profile</h2>
+      <p class="text-secondary small">Update your public information</p>
+    </div>
+
+    <div class="d-grid gap-2 mb-5">
+      <p class="text-secondary small text-center mb-1">Manage your connections</p>
+      <button type="button" routerLink="/following" class="btn btn-info py-2 rounded-pill fw-bold text-dark">
+        <i class="bi bi-people-fill me-2"></i> See Following
+      </button>
+    </div>
+
+    <hr class="border-secondary mb-5 opacity-50">
+
+    <div class="d-flex justify-content-center mb-4 position-relative">
+      <div class="profile-img-container" style="width: 120px; height: 120px;">
+        <img [src]="profileImageSrc" 
+             class="profile-img-post" 
+             style="width: 100%; height: 100%; object-fit: cover;">
+      </div>
+      <label class="btn btn-sm btn-neon position-absolute bottom-0 start-50 translate-middle-x mb-n2" 
+             style="cursor: pointer; border-radius: 20px; padding: 5px 15px;">
+        <i class="bi bi-camera-fill me-1"></i> Change
+        <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+      </label>
+    </div>
+
+    <form [formGroup]="profileForm">
+      
+      <div class="row">
+        <div class="col-md-6 mb-3">
+          <label class="form-label small fw-bold text-light">First Name</label>
+          <div class="custom-input-group border-bottom border-secondary">
+            <input type="text" formControlName="first_name" 
+                   class="form-control bg-transparent border-0 text-white shadow-none" 
+                   placeholder="Your Name">
+          </div>
+        </div>
+
+        <div class="col-md-6 mb-3">
+          <label class="form-label small fw-bold text-light">Last Name</label>
+          <div class="custom-input-group border-bottom border-secondary">
+            <input type="text" formControlName="last_name" 
+                   class="form-control bg-transparent border-0 text-white shadow-none" 
+                   placeholder="Your Surname">
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label small fw-bold text-light">Artist Type</label>
+        <div class="custom-input-group border-bottom border-secondary">
+          <select formControlName="artist_type" class="form-control bg-transparent border-0 text-white shadow-none">
+            <option value="Pianist" class="bg-dark text-white">Pianist</option>
+            <option value="Guitarist" class="bg-dark text-white">Guitarist</option>
+            <option value="Violinist" class="bg-dark text-white">Violinist</option>
+            <option value="Drummer" class="bg-dark text-white">Drummer</option>
+            <option value="Singer" class="bg-dark text-white">Singer</option>
+            <option value="Producer" class="bg-dark text-white">Producer</option>
+            <option value="Other" class="bg-dark text-white">Other</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <label class="form-label small fw-bold text-light">Bio</label>
+        <div class="custom-input-group border border-secondary rounded">
+          <textarea formControlName="bio" rows="3" 
+                    class="form-control bg-transparent border-0 text-white shadow-none" 
+                    placeholder="Tell us about yourself..."></textarea>
+        </div>
+      </div>
+
+      <button type="button" (click)="updateProfile()" 
+              [disabled]="!hasChanges() || profileForm.invalid || loading"
+              class="btn btn-neon w-100 py-3 mb-3 fw-bold">
+        <span *ngIf="!loading">Update Profile</span>
+        <span *ngIf="loading">Updating...</span>
+      </button>
+
+      <button type="button" routerLink="/home" class="btn btn-outline-secondary w-100 py-2 text-white border-secondary">
+        Cancel
+      </button>
+
+    </form>
+  </div>
+</div>

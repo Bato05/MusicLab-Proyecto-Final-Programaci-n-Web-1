@@ -1,0 +1,403 @@
+<nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+        <a class="navbar-brand" routerLink="/home">{{ siteName }}</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+          <ul class="navbar-nav">
+             <li class="nav-item"><a class="nav-link" routerLink="/content" routerLinkActive="active">My content</a></li>
+             <li class="nav-item"><a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload</a></li>
+             <li class="nav-item"><a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a></li>
+             <li class="nav-item"><a class="nav-link" routerLink="/inbox" routerLinkActive="active">Inbox</a></li>
+             <li class="nav-item dropdown">
+                 <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">Options</a>
+                 <ul class="dropdown-menu">
+                   <li><a class="dropdown-item" routerLink="/profile">Profile</a></li>
+                   <li><a class="dropdown-item" routerLink="/settings">Settings</a></li>
+                 </ul>
+             </li>
+             <li class="nav-item" *ngIf="userRole === 1 || userRole === 2">
+                <a class="nav-link text-warning fw-bold" routerLink="/admin" routerLinkActive="active">
+                  <i class="bi bi-shield-lock-fill"></i> Control Panel
+                </a>
+             </li>
+          </ul>
+        </div>
+        <button (click)="logout()" class="btn btn-outline-danger">Log out</button>
+    </div>
+</nav>
+
+<div class="container mt-5 pb-5">
+    
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 p-4 rounded-4 glass-header">
+        <div>
+            <h1 class="display-6 fw-bold text-white mb-1">
+                <i class="bi bi-speedometer2 me-2 text-info"></i> Panel de Control
+            </h1>
+            <p class="text-secondary mb-0" *ngIf="userRole === 1">Administrador</p>
+            <p class="text-info mb-0" *ngIf="userRole === 2">Owner Access</p>
+        </div>
+        <button class="btn btn-lg btn-outline-light px-4" (click)="cargarUsuarios()">
+            <i class="bi bi-arrow-clockwise me-2"></i> Actualizar
+        </button>
+    </div>
+
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-info" style="width: 3rem; height: 3rem;" role="status"></div>
+    </div>
+
+    <div *ngIf="!loading" class="table-card">
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Usuario</th>
+                        <th>Rol</th>
+                        <th>Estado</th>
+                        <th class="text-end pe-4">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of usersList">
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-wrapper">
+                                    <img [src]="'http://localhost/phpMusicLab/uploads/' + user.profile_img_url" 
+                                         (error)="handleImageError($event)" class="user-avatar">
+                                    <span class="status-dot" [ngClass]="user.status == 1 ? 'status-active' : 'status-blocked'"></span>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0 fw-bold text-white">{{ user.first_name }} {{ user.last_name }}</h6>
+                                    <small class="text-muted">{{ user.email }}</small>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <span *ngIf="user.role == 0" class="badge bg-secondary">User</span>
+                            <span *ngIf="user.role == 1" class="badge bg-info text-dark">Admin</span>
+                        </td>
+
+                        <td>
+                            <span *ngIf="user.status == 1" class="text-success small fw-bold"><i class="bi bi-check-circle-fill"></i> Activo</span>
+                            <span *ngIf="user.status == 0" class="text-danger small fw-bold"><i class="bi bi-slash-circle-fill"></i> Bloqueado</span>
+                        </td>
+
+                        <td class="text-end pe-4">
+                            <div class="action-buttons">
+                                
+                                <button (click)="abrirModalPosts(user)" class="btn-action-text btn-posts-action" title="Ver Publicaciones">
+                                    <i class="bi bi-collection-play-fill"></i> Posts
+                                </button>
+
+                                <button (click)="abrirModalEdicion(user)" class="btn-action-text btn-edit-action" title="Editar Datos">
+                                    <i class="bi bi-pencil-square"></i> Editar
+                                </button>
+
+                                <button *ngIf="userRole === 2" 
+                                        (click)="toggleAdminRole(user)" 
+                                        class="btn-action-text" 
+                                        [ngClass]="user.role == 1 ? 'text-secondary' : 'text-warning'"
+                                        title="Cambiar Permisos de Administrador">
+                                    <i class="bi" [ngClass]="user.role == 1 ? 'bi-shield-minus' : 'bi-shield-plus'"></i> 
+                                    {{ user.role == 1 ? 'Degradar' : 'Ascender' }}
+                                </button>
+
+                                <button *ngIf="user.status == 1" (click)="toggleBlockUser(user)" class="btn-action-text btn-block-action">
+                                    <i class="bi bi-lock-fill"></i> Bloquear
+                                </button>
+                                <button *ngIf="user.status == 0" (click)="toggleBlockUser(user)" class="btn-action-text btn-unblock-action">
+                                    <i class="bi bi-unlock-fill"></i> Habilitar
+                                </button>
+
+                                <button (click)="deleteUser(user)" class="btn-action-text btn-delete-action">
+                                    <i class="bi bi-trash-fill"></i> Eliminar
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div *ngIf="!loading && userRole === 2" class="mt-5 d-flex justify-content-end gap-3">
+        
+        <button (click)="abrirModalConfig()" class="btn btn-outline-info fw-bold px-4">
+            <i class="bi bi-gear-fill me-2"></i> Configurar Web
+        </button>
+
+        <button (click)="restaurarSistema()" class="btn btn-outline-danger fw-bold px-4">
+            <i class="bi bi-database-fill-down me-2"></i> RESTAURAR BD
+        </button>
+    </div>
+
+</div>
+
+<div *ngIf="modalEdicionAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="text-white mb-0"><i class="bi bi-pencil-square me-2"></i> Editar Usuario</h5>
+            <button (click)="cerrarModales()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <form (ngSubmit)="guardarCambiosUsuario()">
+                
+                <div class="d-flex flex-column align-items-center mb-4">
+                    <div class="mb-3 rounded-circle overflow-hidden border border-2 border-secondary position-relative" 
+                         style="width: 100px; height: 100px; background: #000;">
+                        
+                        <img [src]="previewUrl ? previewUrl : (
+                                usuarioSeleccionado.profile_img_url && usuarioSeleccionado.profile_img_url !== 'default_profile.png' 
+                                ? 'http://localhost/phpMusicLab/uploads/' + usuarioSeleccionado.profile_img_url 
+                                : 'http://localhost/phpMusicLab/assets/default_profile.png'
+                             )" 
+                             style="width: 100%; height: 100%; object-fit: cover;"
+                             alt="User Avatar">
+                    </div>
+                    
+                    <label class="btn btn-sm btn-outline-info" style="cursor: pointer;">
+                        <i class="bi bi-camera-fill me-2"></i> Cambiar Foto
+                        <input type="file" (change)="onFileSelected($event)" accept="image/*" hidden>
+                    </label>
+                </div>
+                <div class="row">
+                    <div class="col-6">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" [(ngModel)]="usuarioSeleccionado.first_name" name="first_name" class="custom-input" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Apellido</label>
+                        <input type="text" [(ngModel)]="usuarioSeleccionado.last_name" name="last_name" class="custom-input" required>
+                    </div>
+                </div>
+
+                <label class="form-label">Email</label>
+                <input type="email" [(ngModel)]="usuarioSeleccionado.email" name="email" class="custom-input" required>
+
+                <label class="form-label">Tipo de Artista</label>
+                <select [(ngModel)]="usuarioSeleccionado.artist_type" name="artist_type" class="custom-input form-select bg-dark text-white border-secondary">
+                    <option value="Vocalist">Vocalist</option>
+                    <option value="Guitarist">Guitarist</option>
+                    <option value="Bassist">Bassist</option>
+                    <option value="Drummer">Drummer</option>
+                    <option value="Pianist">Pianist</option>
+                    <option value="DJ">DJ</option>
+                    <option value="Producer">Producer</option>
+                    <option value="Another">Another</option>
+                </select>
+
+                <label class="form-label">Biografía</label>
+                <textarea [(ngModel)]="usuarioSeleccionado.bio" name="bio" class="custom-input" rows="3"></textarea>
+
+                <hr class="border-secondary my-3">
+                <label class="form-label text-warning">Cambiar Contraseña <small class="text-muted">(Opcional)</small></label>
+                <input type="password" [(ngModel)]="nuevaPassword" name="password" class="custom-input" placeholder="Nueva contraseña...">
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <button type="button" (click)="cerrarModales()" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" class="btn btn-primary px-4">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalPostsAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content" style="max-width: 700px;">
+        
+        <div class="modal-header border-bottom border-secondary">
+            <h5 class="text-white mb-0">
+                <i class="bi bi-collection-play-fill me-2 text-info"></i> 
+                Publicaciones de <span class="fw-bold text-info">{{ usuarioSeleccionado.first_name }}</span>
+            </h5>
+            <button (click)="cerrarModales()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="modal-body p-0" style="max-height: 60vh; overflow-y: auto;">
+            
+            <div *ngIf="cargandoPosts" class="text-center py-5">
+                <div class="spinner-border text-info" role="status"></div>
+                <p class="mt-2 text-muted">Cargando biblioteca...</p>
+            </div>
+
+            <div *ngIf="!cargandoPosts && listaPostsUsuario.length === 0" class="text-center py-5 text-muted">
+                <i class="bi bi-music-note-list fs-1 opacity-50"></i>
+                <p class="mt-2">Este usuario no tiene publicaciones.</p>
+            </div>
+
+            <div *ngIf="!cargandoPosts && listaPostsUsuario.length > 0" class="d-flex flex-column">
+                
+                <div *ngFor="let post of listaPostsUsuario" 
+                     class="d-flex align-items-center p-3 border-bottom border-secondary hover-effect"
+                     style="transition: background 0.2s;">
+                    
+                    <div class="me-3 rounded-3 d-flex align-items-center justify-content-center flex-shrink-0" 
+                         style="width: 50px; height: 50px; background: rgba(255,255,255,0.05);">
+                        <i class="bi fs-3" 
+                           [ngClass]="{
+                               'bi-file-music-fill text-warning': post.file_type === 'audio',
+                               'bi-file-earmark-pdf-fill text-danger': post.file_type === 'score',
+                               'bi-file-text-fill text-info': post.file_type === 'lyrics' || post.file_type === 'text'
+                           }"></i>
+                    </div>
+
+                    <div class="flex-grow-1 min-width-0 me-3">
+                        <h6 class="text-white mb-1 text-truncate" title="{{ post.title }}">
+                            {{ post.title }}
+                        </h6>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="badge bg-dark border border-secondary text-secondary" style="font-size: 0.7rem;">
+                                {{ post.file_type | uppercase }}
+                            </span>
+                            <small class="text-muted" style="font-size: 0.8rem;">
+                                <i class="bi bi-calendar3 me-1"></i> {{ post.created_at | date:'mediumDate' }}
+                            </small>
+                             <small *ngIf="post.visibility" class="text-muted ms-1" style="font-size: 0.8rem;">
+                                <i class="bi" [ngClass]="{
+                                    'bi-globe': post.visibility === 'public',
+                                    'bi-people-fill': post.visibility === 'followers',
+                                    'bi-lock-fill': post.visibility === 'private'
+                                }"></i>
+                            </small>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex gap-2 flex-shrink-0">
+                        <a [href]="'http://localhost/phpMusicLab/uploads/' + post.file_url" target="_blank" 
+                           class="btn btn-sm btn-outline-light d-flex align-items-center gap-2">
+                            <i class="bi bi-box-arrow-up-right"></i> 
+                            <span class="d-none d-sm-inline">Abrir</span>
+                        </a>
+
+                        <button (click)="abrirModalEditarPost(post)" 
+                                class="btn btn-sm btn-outline-info d-flex align-items-center gap-2">
+                            <i class="bi bi-pencil-square"></i> 
+                            <span class="d-none d-sm-inline">Editar</span>
+                        </button>
+
+                        <button (click)="eliminarPost(post)" 
+                                class="btn btn-sm btn-outline-danger d-flex align-items-center gap-2">
+                            <i class="bi bi-trash-fill"></i> 
+                            <span class="d-none d-sm-inline">Eliminar</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="p-3 bg-dark text-end border-top border-secondary rounded-bottom">
+            <button (click)="cerrarModales()" class="btn btn-secondary px-4">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalEditarPostAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="text-white mb-0"><i class="bi bi-pencil-square me-2"></i> Editar Publicación</h5>
+            <button (click)="cancelarEdicionPost()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-arrow-left"></i> Volver</button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formEditarPost" (ngSubmit)="guardarPostEditado()">
+                
+                <div class="mb-3">
+                    <label class="form-label">Título</label>
+                    <input type="text" formControlName="title" class="custom-input" placeholder="Título...">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Tipo de Contenido</label>
+                    <select formControlName="file_type" class="custom-input form-select bg-dark text-white border-secondary">
+                        <option value="audio">Audio (.mp3)</option>
+                        <option value="lyrics">Letra (Texto)</option>
+                        <option value="score">Partitura (PDF)</option>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Visibilidad</label>
+                    <select formControlName="visibility" class="custom-input form-select bg-dark text-white border-secondary">
+                        <option value="public">Público</option>
+                        <option value="followers">Seguidor Específico</option>
+                        <option value="private">Privado</option>
+                    </select>
+                </div>
+
+                <div class="mb-3" *ngIf="formEditarPost.get('visibility')?.value === 'followers'">
+                    <label class="form-label text-info">Usuario Destino</label>
+                    <select formControlName="destination_id" class="custom-input form-select bg-dark text-white border-info">
+                        <option [ngValue]="null" disabled>Seleccionar usuario...</option>
+                        <option *ngFor="let user of usersList" [ngValue]="user.id">
+                            {{ user.first_name }} {{ user.last_name }}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Descripción</label>
+                    <textarea formControlName="description" class="custom-input" rows="3"></textarea>
+                </div>
+
+                <div class="mb-4">
+                    <label class="btn btn-outline-light w-100 py-3 border-dashed" style="border-style: dashed; cursor: pointer;">
+                      <i class="bi bi-cloud-arrow-up-fill me-2"></i> 
+                      {{ postFileName ? postFileName : 'Reemplazar Archivo (Opcional)' }}
+                      <input type="file" [accept]="acceptedExtensions()" (change)="onPostFileSelected($event)" hidden>
+                    </label>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2">
+                    <button type="button" (click)="cancelarEdicionPost()" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" [disabled]="formEditarPost.invalid" class="btn btn-primary px-4">Guardar Cambios</button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="modalConfigAbierto" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-header">
+            <h5 class="text-white mb-0"><i class="bi bi-gear-fill me-2"></i> Configuración del Sitio</h5>
+            <button (click)="cerrarModales()" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="formSiteConfig" (ngSubmit)="guardarConfiguracion()">
+                
+                <div class="mb-3">
+                    <label class="form-label">Nombre del Sitio (Navbar)</label>
+                    <input type="text" formControlName="site_name" class="custom-input" placeholder="Ej: MusicLab">
+                </div>
+
+                <div class="mb-4">
+                    <label class="form-label">Texto de Bienvenida (Home/Login)</label>
+                    <textarea formControlName="welcome_text" class="custom-input" rows="3" placeholder="Mensaje principal..."></textarea>
+                </div>
+
+                <div class="mb-4 p-3 border border-secondary rounded-3 d-flex align-items-center justify-content-between" 
+                     style="background: rgba(255, 255, 255, 0.05);">
+                    <div>
+                        <label class="form-check-label fw-bold text-white mb-0">
+                            <i class="bi bi-cone-striped text-warning me-2"></i> Modo Mantenimiento
+                        </label>
+                        <div class="text-muted small mt-1">
+                            Al activar, <strong>solo Admins y Owner</strong> podrán iniciar sesión.
+                        </div>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" formControlName="maintenance_mode" style="transform: scale(1.3); cursor: pointer;">
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-4 gap-2">
+                    <button type="button" (click)="cerrarModales()" class="btn btn-outline-secondary">Cancelar</button>
+                    <button type="submit" [disabled]="formSiteConfig.invalid" class="btn btn-primary px-4">Aplicar Cambios</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

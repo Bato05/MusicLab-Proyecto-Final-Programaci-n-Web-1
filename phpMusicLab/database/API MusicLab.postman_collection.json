@@ -1,0 +1,550 @@
+{
+  "info": {
+    "_postman_id": "b53bb7be-00bb-47c4-97b7-68746ef75f14",
+    "name": "API MusicLab",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "40959670",
+    "_collection_link": "https://go.postman.co/collection/40959670-b53bb7be-00bb-47c4-97b7-68746ef75f14?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "postRestore",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzA0ODU4NDUsImV4cCI6MTc3MDQ4OTQ0NSwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6ImJhdXRpc3RhLm93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.QOjYi_gBwasBVNXOcB0U9N9hyho0pdCyEH5hUo6Xck4",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"bautista.owner@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/restore",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "restore"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getUsers",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/users",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getUsersConParametro",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/users/3",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "users",
+            "3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getPosts",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/posts",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getPostsConParametros",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJpYXQiOjE3Njk3MjA4ODAsImV4cCI6MTc2OTcyNDQ4MCwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6Im93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "user_id",
+              "value": "1",
+              "type": "text",
+              "uuid": "e40b42e6-c23c-4cdf-96bd-71cd4c588630"
+            },
+            {
+              "key": "title",
+              "value": "Hola a todos!",
+              "type": "text",
+              "uuid": "1ad1b908-2e3d-4fea-819f-d2f88f749631"
+            },
+            {
+              "key": "description",
+              "value": "Esta es una publicacion de prueba",
+              "type": "text",
+              "uuid": "792d52a0-c483-4c49-a4be-61681b427457"
+            },
+            {
+              "key": "file_type",
+              "value": "audio",
+              "type": "text",
+              "uuid": "0c78d080-fa3d-451d-ae1f-1f6ba1b77d1d"
+            },
+            {
+              "key": "file",
+              "value": "rock-background-460157.mp3",
+              "type": "text",
+              "uuid": "f71762d7-36cf-445f-98df-a04ab2497bfa"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/posts/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "posts",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getFollowers",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjkyNzIyNTIsImV4cCI6MTc2OTI3NTg1MiwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6Im93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.pEj30fhqTj0Y3trbvPNddo4z3zxetyYnkPo5O7OWIE8",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"first_name\": \"pepe\",\r\n    \"last_name\": \"sborlini\",\r\n    \"email\": \"pr@gmail.com\",\r\n    \"password\": \"pepe123\",\r\n    \"artist_type\": \"Vocalist\",\r\n    \"bio\": \"Estudio arquitectura, tengo 20\"\r\n}"
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/followers",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "followers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getFollowersConParametros",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/followers/1",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "followers",
+            "1"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "getSiteconfig",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    },
+    {
+      "name": "deleteUsers",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzA0ODMxNTgsImV4cCI6MTc3MDQ4Njc1OCwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6ImJhdXRpc3RhLm93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.XJa6s6wATfmeUlEwPInSQMa_aLEHyc9u4bLBWVBpjjs",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/users/15",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "users",
+            "15"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deletePosts",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzA2MDYyNzYsImV4cCI6MTc3MDYwOTg3NiwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6ImJhdXRpc3RhLm93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.BAqTLAlMyfijSOM7gmc9kRDXMZkWrpD80A1jeDFV2co",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/posts/15",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "posts",
+            "15"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "deleteFollowers",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzA2MDYyNzYsImV4cCI6MTc3MDYwOTg3NiwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6ImJhdXRpc3RhLm93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.BAqTLAlMyfijSOM7gmc9kRDXMZkWrpD80A1jeDFV2co",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/followers/3",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "followers",
+            "3"
+          ],
+          "query": [
+            {
+              "key": "",
+              "value": null,
+              "type": "text",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "postLogin",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"bautista.owner@gmail.com\",\r\n    \"password\": \"123456\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/login",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "postUsers",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjkyNzIyNTIsImV4cCI6MTc2OTI3NTg1MiwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6Im93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.pEj30fhqTj0Y3trbvPNddo4z3zxetyYnkPo5O7OWIE8",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"first_name\": \"pepe\",\r\n    \"last_name\": \"sborlini\",\r\n    \"email\": \"pr@gmail.com\",\r\n    \"password\": \"pepe123\",\r\n    \"artist_type\": \"Vocalist\",\r\n    \"bio\": \"Estudio arquitectura, tengo 20\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/users",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "users"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "postPosts",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzAxMzg2MzEsImV4cCI6MTc3MDE0MjIzMSwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6Im93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.ijwMSH9AaPF5vNFu6uq7ugUXuIr1bbpesM_6gc-WF7Q",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"user_id\": 1,\r\n    \"title\": \"Prueba de Archivo audio\",\r\n    \"description\": \"Probando subida física con Base64\",\r\n    \"file_type\": \"audio\",\r\n    \"file_name\": \"rock-background-460157.mp3\",\r\n    \"file_data\": \"SG9sYSBNdXNpY0xhYg==\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/posts",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "postFollowers",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/followers",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "followers"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "patchUsers",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NjkxNzk3MzQsImV4cCI6MTc2OTE4MzMzNCwiZGF0YSI6eyJpZCI6IjQiLCJlbWFpbCI6Imp1bGlhbkB1c2VyLmNvbSIsInJvbGUiOiIwIn19.kUaCNFLEgm3Y-H1Yc_CRc6e0n7o_LjKRY_CujBnH6TI",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/users/4",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "users",
+            "4"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "patchPosts",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3Njk4MjA2MTgsImV4cCI6MTc2OTgyNDIxOCwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6Im93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.sHq2gWjVVIfCTIe12PwEGkDqh-IH2v0135DZtWpJ_xc",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": []
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/posts/8",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "posts",
+            "8"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "patchSiteconfig",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Baerer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE3NzA3NDUwMTYsImV4cCI6MTc3MDc0ODYxNiwiZGF0YSI6eyJpZCI6IjEiLCJlbWFpbCI6ImJhdXRpc3RhLm93bmVyQGdtYWlsLmNvbSIsInJvbGUiOiIyIn19.E4BgcuX1iUXesFCYn4Ed6mruuSM48-w4y0r317736Rs",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"site_name\": \"MusicLab 2.0\",\r\n    \"maintenance_mode\": 1,\r\n    \"welcome_text\": \"Bienvenidos a la nueva versión de MusicLab.\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/phpMusicLab/api/siteconfig",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "phpMusicLab",
+            "api",
+            "siteconfig"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
