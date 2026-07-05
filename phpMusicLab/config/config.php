@@ -1,9 +1,9 @@
 <?php
 
-define("DBBASE", "musiclab_db");
-define("DBUSER", "root");
-define("DBPASS", "");
-define("DBHOST", "localhost");
+define("DBBASE", "if0_42343048_MusicLabSQLinfinityFree");
+define("DBUSER", "if0_42343048");
+define("DBPASS", "eae9ktGVFL8ySND");
+define("DBHOST", "sql201.infinityfree.com");
 
 // puente a la base de datos
 $link = mysqli_connect(DBHOST, DBUSER, DBPASS, DBBASE);
