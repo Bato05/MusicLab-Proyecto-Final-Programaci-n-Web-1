@@ -10,7 +10,7 @@ export class LoginService {
   private http = inject(HttpClient);
 
   // acción 'login' para que el método POST llame a postLogin()
-  private apiUrl = 'http://localhost/phpMusicLab/api/index.php?accion=login';
+  private apiUrl = 'https://musiclab.infinityfreeapp.com/api/';
 
   postLogin(userData: any): Observable<any> {
     return this.http.post(this.apiUrl, userData);
